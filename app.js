@@ -27,6 +27,30 @@ app.get('/api/v1/tours', (req, res) => {
         }
     });
 });
+//to define variables use colon 
+//to make variable optional use ?
+app.get('/api/v1/tours/:id', (req, res) => {
+    console.log(req.params);
+
+    const id = req.params.id * 1;
+
+    if(id > tours.length){
+        console.log('Not have tour for this id ')
+        res.status(404).json({
+            status: 'Faild',
+        })
+    } 
+    const tour = tours.find(e => e.id === id)
+
+  //Jsend data specefication
+  res.status(200).json({
+    status: 'success',
+    //results: tours.length,
+    data: {
+      tour,
+    },
+  });
+});
 
 app.post('/api/v1/tours', (req,res) =>{
     console.log(req.body);
