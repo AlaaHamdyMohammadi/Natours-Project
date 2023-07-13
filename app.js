@@ -83,6 +83,21 @@ app.patch('/api/v1/tours/:id', (req, res) => {
         }
     })
 });
+app.delete('/api/v1/tours/:id', (req, res) => {
+    if (req.params.id * 1 > tours.length) {
+    res.status(404).json({
+      status: 'Faild',
+      message: 'Not have tour for this id',
+    });
+    } 
+    // 204 = No content
+    res.status(204).json({
+        status: 'success',
+        data: null,
+    })
+});
+
+
 
 const port = 8000;
 app.listen(port, () =>{
