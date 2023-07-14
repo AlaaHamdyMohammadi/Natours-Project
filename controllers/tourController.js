@@ -5,6 +5,18 @@ const tours = JSON.parse(
 );
 
 // 2) handlers
+
+exports.checkID = (req, res, next, val) =>{
+  console.log(`tour id = ${val}`);
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({
+      status: 'Faild',
+      message: 'Not have tour for this id',
+    });
+  }
+  next();
+}
+
 exports.getAllTours = (req, res) => {
   console.log(req.requestTime);
   //Jsend data specefication
@@ -24,12 +36,6 @@ exports.getTour = (req, res) => {
 
   const id = req.params.id * 1;
 
-  if (id > tours.length) {
-    console.log('Not have tour for this id ');
-    res.status(404).json({
-      status: 'Faild',
-    });
-  }
   const tour = tours.find((e) => e.id === id);
 
   //Jsend data specefication
@@ -64,12 +70,6 @@ exports.createTour = (req, res) => {
 };
 
 exports.updateTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    res.status(404).json({
-      status: 'Faild',
-      message: 'Not have tour for this id',
-    });
-  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -79,12 +79,7 @@ exports.updateTour = (req, res) => {
 };
 
 exports.deleteTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    res.status(404).json({
-      status: 'Faild',
-      message: 'Not have tour for this id',
-    });
-  }
+  
   // 204 = No content
   res.status(204).json({
     status: 'success',
