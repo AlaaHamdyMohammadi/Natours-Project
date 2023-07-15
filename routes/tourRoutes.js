@@ -8,12 +8,12 @@ const tourRouter = express.Router();
 //     console.log(`tour id = ${val}`);
 //     next();
 // });
-tourRouter.param('id', tourController.checkID);
+// tourRouter.param('id', tourController.checkID);
 
 tourRouter
   .route('/')
   .get(tourController.getAllTours)
-  .post(tourController.checkBody, tourController.createTour);
+  .post(tourController.createTour);
 tourRouter.route('/:id').get(tourController.getTour).patch(tourController.updateTour).delete(tourController.deleteTour);
 
 module.exports = tourRouter;
