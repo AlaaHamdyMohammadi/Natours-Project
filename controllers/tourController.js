@@ -3,38 +3,43 @@ const Tour = require('./../models/tourModel');
 
 // 2) handlers
 
-exports.getAllTours = (req, res) => {
-  console.log(req.requestTime);
-  //Jsend data specefication
-  res.status(200).json({
-    status: 'success',
-    /*
-    results: tours.length,
-    data: {
-      tours,
-    },
-    */
-  });
+exports.getAllTours = async(req, res) => {
+  try{
+
+    //to get all documents using find method => return arr of all docs
+    const tours = await Tour.find();
+    
+    res.status(200).json({
+      status: 'success',   
+      results: tours.length,
+      data: {
+        tours,
+      },
+    });
+  }catch(err){
+    res.status(404).json({
+      status: 'Faild',
+      message: 'Invalid Data',
+    })
+  }
 };
 
-//to define variables use colon
-//to make variable optional use ?
-exports.getTour = (req, res) => {
-  console.log(req.params);
-
-  const id = req.params.id * 1;
-  /*
-  const tour = tours.find((e) => e.id === id);
-
-  //Jsend data specefication
-  res.status(200).json({
-    status: 'success',
-    //results: tours.length,
-    data: {
-      tour,
-    },
-  });
-  */
+exports.getTour = async (req, res) => {
+  try{
+    const tour = await Tour.findById(req.params.id);
+    res.status(200).json({
+      status: 'success',
+      //results: tours.length,
+      data: {
+        tour,
+      },
+    });
+  }catch(err){
+    res.status(404).json({
+      status: 'Faild',
+      message: 'Invalid Data',
+    });
+  }
 };
 
 exports.createTour = async (req, res) => {
