@@ -5,10 +5,32 @@ const Tour = require('./../models/tourModel');
 
 exports.getAllTours = async(req, res) => {
   try{
+    //shalloCopy(Build query)
+    const queryObj = {...req.query};
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach(e => delete queryObj[e])
 
+    console.log(req.query);
+
+    const query = Tour.find(req.query);
     //to get all documents using find method => return arr of all docs
-    const tours = await Tour.find();
     
+    //filter query string => first way: 
+    // const tours = await Tour.find({
+    //     duration: 5,
+    //     difficulty: 'easy',
+    //   });
+
+    //Execute query
+    const tours = await query;
+
+    //filter query string => second way: Mongoose Methods
+    // const tours = await Tour.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty').equals('easy');
+    
+    //Send response
     res.status(200).json({
       status: 'success',   
       results: tours.length,
