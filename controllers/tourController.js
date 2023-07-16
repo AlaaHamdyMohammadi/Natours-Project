@@ -5,34 +5,43 @@ const Tour = require('./../models/tourModel');
 
 exports.getAllTours = async(req, res) => {
   try{
-    //shalloCopy(Build query)
-    const queryObj = {...req.query};
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
-    excludedFields.forEach(e => delete queryObj[e])
-
     console.log(req.query);
 
-    const query = Tour.find(req.query);
-    //to get all documents using find method => return arr of all docs
+    //shalloCopy(Build query)
+    // 1- Filtering
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((e) => delete queryObj[e]);
     
-    //filter query string => first way: 
+    // 1- Advanced Filtering
+    let queryStr = JSON.stringify(queryObj);
+    // replace: gte, gt, lte, lt
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    console.log(JSON.parse(queryStr));
+    
+    
+    //to get all documents using find method => return arr of all docs
+    const query = Tour.find(JSON.parse(queryStr));
+    
+    //Execute query
+    const tours = await query;
+
+
+    //filter query string => first way:
     // const tours = await Tour.find({
     //     duration: 5,
     //     difficulty: 'easy',
     //   });
-
-    //Execute query
-    const tours = await query;
 
     //filter query string => second way: Mongoose Methods
     // const tours = await Tour.find()
     //   .where('duration')
     //   .equals(5)
     //   .where('difficulty').equals('easy');
-    
+
     //Send response
     res.status(200).json({
-      status: 'success',   
+      status: 'success',
       results: tours.length,
       data: {
         tours,
