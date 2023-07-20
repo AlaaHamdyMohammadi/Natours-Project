@@ -1,6 +1,6 @@
 const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
-
+const catchAsync = require('./../utils/catchAsync')
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
@@ -11,8 +11,7 @@ exports.aliasTopTours = (req, res, next) => {
 
 
 
-exports.getAllTours = async(req, res) => {
-  try{
+exports.getAllTours = catchAsync(async(req, res, next) => {
     console.log(req.query);
 
     //Execute query
@@ -28,16 +27,10 @@ exports.getAllTours = async(req, res) => {
         tours,
       },
     });
-  }catch(err){
-    res.status(404).json({
-      status: 'Faild',
-      message: 'Invalid Data',
-    })
-  }
-};
+ 
+});
 
-exports.getTour = async (req, res) => {
-  try{
+exports.getTour = catchAsync(async (req, res, next) => {
     const tour = await Tour.findById(req.params.id);
     res.status(200).json({
       status: 'success',
@@ -46,39 +39,32 @@ exports.getTour = async (req, res) => {
         tour,
       },
     });
-  }catch(err){
-    res.status(404).json({
-      status: 'Faild',
-      message: 'Invalid Data',
-    });
-  }
-};
+});
 
-exports.createTour = async (req, res) => {
-  try{
-    // const newTour = new Tour({});
-    // newTour.save().then();
-  
-    const newTour = await Tour.create(req.body);
-  
-    res.status(201).json({
-      status: 'success',
-      data: {
-        tour: newTour,
-      },
-    });
-  }catch(err){
-    res.status(400).json({
-      status: 'Faild',
-      message: 'Invalid data sent',
-    })
-  }
-};
 
-exports.updateTour = async (req, res) => {
-  try{
 
-  
+exports.createTour = catchAsync(async (req, res, next) => {
+  const newTour = await Tour.create(req.body);
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      tour: newTour,
+    },
+  });
+  // try{
+  //   // const newTour = new Tour({});
+  //   // newTour.save().then();
+
+  // }catch(err){
+  //   res.status(400).json({
+  //     status: 'Faild',
+  //     message: 'Invalid data sent',
+  //   })
+  // }
+});
+
+exports.updateTour = catchAsync(async (req, res, next) => {
     const tour =  await Tour.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -90,32 +76,18 @@ exports.updateTour = async (req, res) => {
         tour,
       },
     })
-  }catch(err){
-    res.status(400).json({
-      status: 'Faild',
-      message: 'Invalid data sent',
-    })
-  }
-};
+});
 
-exports.deleteTour = async (req, res) => {
-  try{
-    await Tour.findByIdAndDelete(req.params.id);
-    // 204 = No content
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
-  }catch(err){
-    res.status(400).json({
-      status: 'Faild',
-      message: 'Invalid data sent',
-    });
-  }
-};
+exports.deleteTour = catchAsync(async (req, res, next) => {
+  await Tour.findByIdAndDelete(req.params.id);
+  // 204 = No content
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
 
-exports.getTourStats = async (req, res) => {
-  try{
+exports.getTourStats =  catchAsync(async (req, res, next) => {
     const stats = await Tour.aggregate([
       {
         $match: { ratingAverage: { $gte: 4.5 } },
@@ -145,16 +117,9 @@ exports.getTourStats = async (req, res) => {
         stats
       },
     });
-  }catch(err){
-    res.status(400).json({
-      status: 'Faild',
-      message: 'Invalid data sent',
-    });
-  }
-}
+});
 
-exports.getMounthlyPlan = async(req, res) => {
-  try{
+exports.getMounthlyPlan =  catchAsync(async(req, res, next) => {
     const year = req.params.year * 1; //2021
 
     const plan = await Tour.aggregate([
@@ -196,10 +161,4 @@ exports.getMounthlyPlan = async(req, res) => {
         plan,
       },
     });
-  }catch(err){
-    res.status(400).json({
-      status: 'Faild',
-      message: 'Invalid data sent',
-    });
-  }
-}
+});
