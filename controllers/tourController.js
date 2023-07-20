@@ -12,6 +12,7 @@ exports.aliasTopTours = (req, res, next) => {
 
 
 exports.getAllTours = catchAsync(async(req, res, next) => {
+    //console.log(req.query);
     console.log(req.query);
 
     //Execute query
