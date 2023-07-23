@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -24,6 +25,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordConfirm: {
     type: String,
+    //required means in the input, not required in db
     required: [true, 'User must confirm password'],
     validate: {
         // This only works on create ond on save
@@ -35,6 +37,18 @@ const userSchema = new mongoose.Schema({
     }
   },
 });
+
+//encryption happens between getting the data and saving it to the database
+userSchema.pre('save', async function(next){
+    //only run if password is modified 
+    if(!this.isModified('password')) return next();
+
+    // 12 => costParameter : measure of how CPU intensive this operation 
+    this.password = await bcrypt.hash(this.password, 12);
+    //delete to not show in db
+    this.passwordConfirm = undefined;
+    next();
+})
 
 const User = mongoose.model('User', userSchema);
 
