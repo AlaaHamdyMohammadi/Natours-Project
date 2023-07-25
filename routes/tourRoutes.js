@@ -2,6 +2,7 @@ const tourController = require('./../controllers/tourController');
 const express = require('express');
 
 const tourRouter = express.Router();
+const authController = require('./../controllers/authController');
 
 // tourRouter.param('id', (req, res, next, val) => {
 //     // val = value of id parameter
@@ -19,7 +20,7 @@ tourRouter.route('/monthly-plan/:year').get(tourController.getMounthlyPlan);
 
 tourRouter
   .route('/')
-  .get(tourController.getAllTours)
+  .get(authController.protect,tourController.getAllTours)
   .post(tourController.createTour);
 tourRouter.route('/:id').get(tourController.getTour).patch(tourController.updateTour).delete(tourController.deleteTour);
 
