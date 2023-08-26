@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
@@ -15,6 +16,11 @@ const userSchema = new mongoose.Schema({
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
   photo: String,
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user',
+  },
   password: {
     type: String,
     required: [true, 'User must have password'],
@@ -30,43 +36,73 @@ const userSchema = new mongoose.Schema({
     //required means in the input, not required in db
     required: [true, 'User must confirm password'],
     validate: {
-        // This only works on create ond on save
-        //work when create new object(on .create or on save)
-        validator: function(el){
-            return el === this.password; // if abc === abc => return true, if not return false
-        },
-        message: 'Passwords are not the same',
-    }
+      // This only works on create ond on save
+      //work when create new object(on .create or on save)
+      validator: function (el) {
+        return el === this.password; // if abc === abc => return true, if not return false
+      },
+      message: 'Passwords are not the same',
+    },
+    select: false,
   },
-  passwordChangedAt: Date
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 //encryption happens between getting the data and saving it to the database
-userSchema.pre('save', async function(next){
-    //only run if password is modified 
-    if(!this.isModified('password')) return next();
+userSchema.pre('save', async function (next) {
+  //only run if password is modified
+  if (!this.isModified('password')) return next();
 
-    // 12 => costParameter : measure of how CPU intensive this operation 
-    this.password = await bcrypt.hash(this.password, 12);
-    //delete to not show in db
-    this.passwordConfirm = undefined;
-    next();
-})
+  // 12 => costParameter : measure of how CPU intensive this operation
+  this.password = await bcrypt.hash(this.password, 12);
+  //delete to not show in db
+  this.passwordConfirm = undefined;
+  next();
+});
 
-userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
+userSchema.pre('save', function (next) {
+  //If password not changed or not create new document
+  if (!this.isModified('password') || this.isNew) return next();
+
+  // -1000: To put passwordChangedAt one second in the past to ensure the token is always created after the password has been changed
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
   return await bcrypt.compare(candidatePassword, userPassword);
-}
+};
 
-userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
-  if(this.passwordChangedAt){
-    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
     //console.log(changedTimestamp, JWTTimestamp);
     return JWTTimestamp < changedTimestamp;
   }
 
   //Not Changed
   return false;
-}
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+    console.log({resetToken}, this.passwordResetToken)
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  return resetToken;
+};
 
 const User = mongoose.model('User', userSchema);
 
