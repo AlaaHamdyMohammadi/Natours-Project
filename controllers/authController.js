@@ -148,7 +148,7 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   }
   
 });
-
+/*
 exports.resetPassword = catchAsync(async(req, res, next) => {
     // 1- Get user based on the token(Encrypt token again and compare it with encrypted one in db)
 
@@ -183,6 +183,7 @@ exports.resetPassword = catchAsync(async(req, res, next) => {
     //   token,
     // });
 });
+*/
 
 exports.updatePassword = catchAsync(async(req, res, next) =>{
   // 1- Get user from collection

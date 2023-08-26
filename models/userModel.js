@@ -62,14 +62,14 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.pre('save', function (next) {
-  //If password not changed or not create new document
-  if (!this.isModified('password') || this.isNew) return next();
+// userSchema.pre('save', function (next) {
+//   //If password not changed or not create new document
+//   if (!this.isModified('password') || this.isNew) return next();
 
-  // -1000: To put passwordChangedAt one second in the past to ensure the token is always created after the password has been changed
-  this.passwordChangedAt = Date.now() - 1000;
-  next();
-});
+//   // -1000: To put passwordChangedAt one second in the past to ensure the token is always created after the password has been changed
+//   this.passwordChangedAt = Date.now() - 1000;
+//   next();
+// });
 
 userSchema.methods.correctPassword = async function (
   candidatePassword,
