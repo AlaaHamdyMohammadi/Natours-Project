@@ -36,7 +36,7 @@ app.use(express.json());
 //Data sanitization against SQL query injection
 app.use(mongoSanitize());
 
-//Data sanitization against XSS
+//Data sanitization against XSS 
 app.use(xss());
 
 //Serving static files
