@@ -3210,3 +3210,4 @@ node_modules/xss-filters/tests/fuzz/bin/fuzzer.js
 node_modules/xss-filters/tests/fuzz/bin/seed.xss
 node_modules/xss-filters/tests/unit/private-xss-filters.js
 node_modules/xss-filters/tests/unit/xss-filters.js
+config.env/
