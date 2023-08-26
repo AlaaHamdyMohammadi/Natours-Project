@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active:{ //New user in website is an active user
+    type: Boolean,
+    default: true,
+    select: false, //to hidden this flag about any one
+  }
 });
 
 //encryption happens between getting the data and saving it to the database
@@ -70,6 +75,16 @@ userSchema.pre('save', async function (next) {
 //   this.passwordChangedAt = Date.now() - 1000;
 //   next();
 // });
+
+
+//To hidden the delete user from the output 
+//Use Regular expression to match the find keyword with any findUpdata or findDelete
+userSchema.pre(/^find/, function(next){
+  //this points to the current query
+  this.find({ active: {$ne: false} });
+
+  next();
+});
 
 userSchema.methods.correctPassword = async function (
   candidatePassword,
