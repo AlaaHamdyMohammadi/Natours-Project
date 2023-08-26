@@ -13,8 +13,9 @@ userRouter.post('/forgotPassword', authController.forgetPassword);
 userRouter.patch(
   '/updateMyPassword',
   authController.protect,
-  authController.updatePassword,
+  authController.updatePassword
 );
+userRouter.patch('/updateMe', authController.protect, userController.updateMe);
 
 userRouter.route('/').get(userController.getAllUsers).post(userController.createUser);
 userRouter.route('/:id').get(userController.getUser).patch(userController.updateUser).delete(userController.deleteUser);
