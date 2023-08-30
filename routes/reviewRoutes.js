@@ -12,12 +12,5 @@ reviewRoute
     authController.restrictTo('user'),
     reviewController.createReview
   );
- 
-// reviewRoute
-//   .route('/:id')
-//   .get(reviewController.getReview)
-//   .patch(reviewController.updateReview)
-//   .delete(reviewController.deleteReview); 
-
 
 module.exports = reviewRoute;
