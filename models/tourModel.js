@@ -108,6 +108,12 @@ const tourSchema = new mongoose.Schema(
       {type: mongoose.Schema.ObjectId,
       ref: 'User'}
     ],
+    tourReviews: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Review',
+      }
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -117,6 +123,13 @@ const tourSchema = new mongoose.Schema(
 
 tourSchema.virtual('durationWeeks').get(function(){
   return this.duration / 7;
+});
+
+//Virtual populate
+tourSchema.virtual('tourReview', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 });
 
 // 1- Document middleware run before save event and create event
