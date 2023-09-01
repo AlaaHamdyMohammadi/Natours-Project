@@ -3,6 +3,7 @@ const express = require('express');
 
 const tourRouter = express.Router();
 const authController = require('./../controllers/authController');
+const reviewController = require('./../controllers/reviewController');
 
 // tourRouter.param('id', (req, res, next, val) => {
 //     // val = value of id parameter
@@ -30,6 +31,14 @@ tourRouter
     authController.protect,
     authController.restrictTo('admin', 'lead-guide'),
     tourController.deleteTour
+  );
+
+tourRouter
+  .route('/:tourId/reviews')
+  .post(
+    authController.protect,
+    authController.restrictTo('user'),
+    reviewController.createReview
   );
 
 module.exports = tourRouter;
