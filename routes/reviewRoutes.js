@@ -13,4 +13,6 @@ reviewRoute
     reviewController.createReview
   );
 
+reviewRoute.route('/:id').delete(reviewController.deleteReview);  
+
 module.exports = reviewRoute;
