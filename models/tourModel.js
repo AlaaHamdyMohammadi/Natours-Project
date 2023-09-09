@@ -182,7 +182,7 @@ tourSchema.pre('aggregate', function(next){
 
 const Tour = mongoose.model('Tour', tourSchema);
 
-module.exports = Tour;
+module.exports = Tour; 
 
 /*
 //make middleware in Express using mongoose between two events
