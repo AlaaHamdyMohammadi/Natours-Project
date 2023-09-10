@@ -108,7 +108,7 @@ const tourSchema = new mongoose.Schema(
       {type: mongoose.Schema.ObjectId,
       ref: 'User'}
     ],
-    tourReviews: [
+    reviews: [
       {
         type: mongoose.Schema.ObjectId,
         ref: 'Review',
