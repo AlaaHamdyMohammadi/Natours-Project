@@ -14,3 +14,25 @@ exports.deleteOne = Model => catchAsync(async(req, res, next) => {
     });
 });
 
+exports.updateOne = Model => catchAsync(async(req, res, next) => {
+    const document = await Model.findByIdAndUpdate(req.params.id,req.body, {new: true, runValidators: true});
+    if(!document){
+        return next(AppError('No document found with that ID', 404));
+    }
+    res.status(200).json({
+        status: 'Success',
+        data:{document},
+    })
+});
+
+exports.createOne = Model => catchAsync(async(req, res, next) => {
+    const document = await Model.create(req.body);
+    if(!document){
+        return next(AppError('No document found with that ID', 404));
+    }
+    res.status(201).json({
+        status: 'Success',
+        data: {document}
+    })
+})
+

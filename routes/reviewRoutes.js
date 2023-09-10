@@ -10,9 +10,10 @@ reviewRoute
   .post(
     authController.protect,
     authController.restrictTo('user'),
+    reviewController.setTourUserIds,
     reviewController.createReview
   );
 
-reviewRoute.route('/:id').delete(reviewController.deleteReview);  
+reviewRoute.route('/:id').patch(reviewController.updateReview).delete(reviewController.deleteReview);  
 
 module.exports = reviewRoute;
