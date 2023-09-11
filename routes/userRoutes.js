@@ -10,22 +10,23 @@ userRouter.post('/login', authController.login);
 userRouter.post('/forgotPassword', authController.forgetPassword);
 //userRouter.patch("/resetPassword/:token", authController.resetPassword); 
 
-userRouter.use(authController.protect)
+//This protect all routes after this middleware
+userRouter.use(authController.protect);
 
 userRouter.patch(
   '/updateMyPassword',
-  authController.protect,
   authController.updatePassword
 );
 
 userRouter.get(
   '/me',
-  authController.protect,
   userController.getMe,
   userController.getUser
 );
-userRouter.patch('/updateMe', authController.protect, userController.updateMe);
-userRouter.delete('/deleteMe', authController.protect, userController.deleteMe);
+userRouter.patch('/updateMe', userController.updateMe);
+userRouter.delete('/deleteMe', userController.deleteMe);
+
+userRouter.use(authController.restrictTo('admin'));
 
 userRouter.route('/').get(userController.getAllUsers).post(userController.createUser);
 userRouter.route('/:id').get(userController.getUser).patch(userController.updateUser).delete(userController.deleteUser);
