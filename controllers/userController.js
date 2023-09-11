@@ -13,6 +13,11 @@ const filterObj = (obj, ...allawedFields) => {
   return newObj;
 }
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+}
+
 //its update just the authenticated user
 exports.updateMe = catchAsync(async(req, res, next)=> {
   // 1- Create an error if user posts password data
