@@ -10,6 +10,8 @@ userRouter.post('/login', authController.login);
 userRouter.post('/forgotPassword', authController.forgetPassword);
 //userRouter.patch("/resetPassword/:token", authController.resetPassword); 
 
+userRouter.use(authController.protect)
+
 userRouter.patch(
   '/updateMyPassword',
   authController.protect,
